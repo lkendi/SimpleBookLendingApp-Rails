@@ -55,4 +55,11 @@ class BookTest < ActiveSupport::TestCase
     assert_not duplicate_book.valid?
     assert_includes duplicate_book.errors[:isbn], "already exists"
   end
+
+  test "destroying a book destroys its lendings" do
+    @book.lendings.create!(borrower_name: "Test Borrower", borrowed_at: Time.current)
+    assert_difference("Lending.count", -@book.lendings.count) do
+      @book.destroy
+    end
+  end
 end
